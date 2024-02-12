@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Image from "next/image";
 import React, { useState } from 'react';
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 const Logged = () => {
   return (
@@ -14,6 +14,7 @@ const Logged = () => {
 };
 
 const DesktopNav = () => {
+  const { data: session } = useSession();
   return (
     <div className='sm:flex hidden'>
       <div className='flex gap-3 md:gap-5'>
@@ -26,7 +27,7 @@ const DesktopNav = () => {
         </button>
 
         <Link href='/profile'>
-          <UserImage />
+          <UserImage image={session?.user?.image} />
         </Link>
 
       </div>
@@ -36,12 +37,16 @@ const DesktopNav = () => {
 
 const MobileNav = () => {
 
+  const { data: session } = useSession();
   const [toggleDropdown, setToggleDropdown] = useState(false);
 
   return (
     <div className='sm:hidden flex relative'>
       <div className='flex'>
-        <UserImage onClick={() => setToggleDropdown(prev => !prev)} />
+        <UserImage
+          image={session?.user?.image}
+          onClick={() => setToggleDropdown(prev => !prev)}
+        />
         {toggleDropdown && (
           <div className='dropdown'>
             <Link
@@ -76,10 +81,14 @@ const MobileNav = () => {
 };
 
 const UserImage = ({
-  onClick
-}: { onClick?: () => void; }) => (
+  onClick,
+  image
+}: {
+  onClick?: () => void;
+  image: string | null | undefined;
+}) => (
   <Image
-    src={`/assets/icons/noavatar.png`}
+    src={image || `/assets/icons/noavatar.png`}
     width={37}
     height={37}
     className='rounded-full'

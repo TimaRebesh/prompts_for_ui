@@ -19,7 +19,7 @@ const handler = NextAuth({
           const user = await User.findOne({ email });
           if (!user) {
             const newUser = new User({
-              username: profile?.name?.trim().toLocaleLowerCase(),
+              username: profile?.name?.trim(),
               email,
               image,
             });
@@ -37,6 +37,7 @@ const handler = NextAuth({
         email: session.user.email,
       });
       session.user.id = sessionUser._id.toString();
+      session.user.isAdmin = sessionUser.isAdmin as boolean;
       return session;
     },
   },
