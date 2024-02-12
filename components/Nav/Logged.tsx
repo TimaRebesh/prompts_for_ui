@@ -4,6 +4,12 @@ import Image from "next/image";
 import React, { useState } from 'react';
 import { signOut, useSession } from "next-auth/react";
 
+enum NAV {
+  CREATE_PROMPT = 'Create Prompt',
+  SING_OUT = 'Sign Out',
+  MY_PROFILE = 'My Profile'
+}
+
 const Logged = () => {
   return (
     <>
@@ -19,11 +25,11 @@ const DesktopNav = () => {
     <div className='sm:flex hidden'>
       <div className='flex gap-3 md:gap-5'>
         <Link href='/create-prompt' className='black_btn'>
-          Create Post
+          {NAV.CREATE_PROMPT}
         </Link>
 
         <button type='button' onClick={() => signOut()} className='outline_btn'>
-          Sign Out
+          {NAV.SING_OUT}
         </button>
 
         <Link href='/profile'>
@@ -54,14 +60,14 @@ const MobileNav = () => {
               className='dropdown_link'
               onClick={() => setToggleDropdown(false)}
             >
-              My Profile
+              {NAV.MY_PROFILE}
             </Link>
             <Link
               href='/create-prompt'
               className='dropdown_link'
               onClick={() => setToggleDropdown(false)}
             >
-              Create Prompt
+              {NAV.CREATE_PROMPT}
             </Link>
             <button
               type='button'
@@ -71,7 +77,7 @@ const MobileNav = () => {
               }}
               className='mt-5 w-full black_btn'
             >
-              Sign Out
+              {NAV.SING_OUT}
             </button>
           </div>
         )}
