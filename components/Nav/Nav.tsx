@@ -3,11 +3,11 @@ import Logo from "./Logo";
 import Logged from "./Logged";
 import UnLogged from "./UnLogged";
 import { useEffect, useMemo, useState } from "react";
-import { getProviders, ClientSafeProvider, LiteralUnion } from "next-auth/react";
+import { getProviders, ClientSafeProvider, LiteralUnion, useSession } from "next-auth/react";
 import { BuiltInProviderType } from "next-auth/providers/index";
 
 const Nav = () => {
-  const isLogged = true;
+  const { data: session } = useSession();
   const [providers, setProviders] = useState<
     Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null
   >(null);
@@ -27,7 +27,7 @@ const Nav = () => {
   return (
     <nav className='flex-between w-full mb-16 pt-3'>
       <Logo />
-      {isLogged ?
+      {session?.user ?
         <Logged />
         :
         <UnLogged providers={providersValues} />
