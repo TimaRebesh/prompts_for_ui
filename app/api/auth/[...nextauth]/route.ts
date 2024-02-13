@@ -15,13 +15,13 @@ const handler = NextAuth({
       if (profile) {
         try {
           await connectToDB();
-          const { email, image } = profile;
+          const { email, picture } = profile;
           const user = await User.findOne({ email });
           if (!user) {
             const newUser = new User({
               username: profile?.name?.trim(),
+              image: picture,
               email,
-              image,
             });
             await newUser.save();
           }

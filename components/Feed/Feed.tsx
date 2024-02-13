@@ -1,61 +1,61 @@
 "use client";
-import { useState, useEffect } from "react";
-// import PromptCard from "./PromptCard";
-
-
+import { useState, useEffect, ChangeEventHandler, ChangeEvent } from "react";
+import { PromptCard } from "./PromptCard/PromptCard";
+import { Prompt } from "next-auth";
 
 const Feed = () => {
-  const [allPosts, setAllPosts] = useState([]);
+  const [allPrompts, setAllPosts] = useState<Array<Prompt>>([]);
 
   // Search states
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
 
-  // const fetchPosts = async () => {
-  //   const response = await fetch("/api/prompt");
-  //   const data = await response.json();
+  const fetchPosts = async () => {
+    const response = await fetch("/api/prompt");
+    const data = await response.json();
 
-  //   setAllPosts(data);
-  // };
+    setAllPosts(data);
+  };
 
-  // useEffect(() => {
-  //   fetchPosts();
-  // }, []);
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
-  // const filterPrompts = (searchtext) => {
-  //   const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
-  //   return allPosts.filter(
-  //     (item) =>
-  //       regex.test(item.creator.username) ||
-  //       regex.test(item.tag) ||
-  //       regex.test(item.prompt)
-  //   );
-  // };
 
-  // const handleSearchChange = (e) => {
-  //   clearTimeout(searchTimeout);
-  //   setSearchText(e.target.value);
+  const filterPrompts = (searchtext: string) => {
+    // const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
+    // return allPrompts.filter(
+    //   (item) =>
+    //     regex.test(item.creator.username) ||
+    //     regex.test(item.tag) ||
+    //     regex.test(item.prompt)
+    // );
+  };
 
-  //   // debounce method
-  //   setSearchTimeout(
-  //     setTimeout(() => {
-  //       const searchResult = filterPrompts(e.target.value);
-  //       setSearchedResults(searchResult);
-  //     }, 500)
-  //   );
-  // };
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    // clearTimeout(searchTimeout);
+    // setSearchText(e.target.value);
 
-  // const handleTagClick = (tagName) => {
-  //   setSearchText(tagName);
+    // // debounce method
+    // setSearchTimeout(
+    //   setTimeout(() => {
+    //     const searchResult = filterPrompts(e.target.value);
+    //     setSearchedResults(searchResult);
+    //   }, 500)
+    // );
+  };
 
-  //   const searchResult = filterPrompts(tagName);
-  //   setSearchedResults(searchResult);
-  // };
+  const handleTagClick = (tagName: string) => {
+    setSearchText(tagName);
+
+    const searchResult = filterPrompts(tagName);
+    // setSearchedResults(searchResult);
+  };
 
   return (
     <section className='feed'>
-      {/* <form className='relative w-full flex-center'>
+      <div className='relative w-full flex-center'>
         <input
           type='text'
           placeholder='Search for a tag or a username'
@@ -64,33 +64,38 @@ const Feed = () => {
           required
           className='search_input peer'
         />
-      </form> */}
+      </div>
 
-      {/* All Prompts */}
-      {/* {searchText ? (
+      {searchText ? (
         <PromptCardList
           data={searchedResults}
           handleTagClick={handleTagClick}
         />
       ) : (
-        <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
-      )} */}
+        <PromptCardList data={allPrompts} handleTagClick={handleTagClick} />
+      )}
     </section>
   );
 };
 
-// const PromptCardList = ({ data, handleTagClick }) => {
-//   return (
-//     <div className='mt-16 prompt_layout'>
-//       {data.map((post) => (
-//         <PromptCard
-//           key={post._id}
-//           post={post}
-//           handleTagClick={handleTagClick}
-//         />
-//       ))}
-//     </div>
-//   );
-// };
+const PromptCardList = ({
+  data,
+  handleTagClick
+}: {
+  data: Array<Prompt>,
+  handleTagClick: (tagName: string) => void;
+}) => {
+  return (
+    <div className='mt-16 prompt_layout'>
+      {data.map((prompt) => (
+        <PromptCard
+          key={prompt._id}
+          prompt={prompt}
+          handleTagClick={handleTagClick}
+        />
+      ))}
+    </div>
+  );
+};
 
 export default Feed;
