@@ -1,8 +1,10 @@
 'use client';
 import { SubmitButton } from "@components/FormElements/Buttons";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { RegisterOptions, SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "@components/FormElements/Input";
-import { PasswordInput } from "@components/FormElements/InputPassword";
+import { InputPassword } from "@components/FormElements/InputPassword";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { schema } from "./validation";
 
 type RegisterInputs = {
   username: string;
@@ -15,11 +17,20 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    setError,
     formState: { errors },
-  } = useForm<RegisterInputs>();
+  } = useForm<RegisterInputs>({ resolver: yupResolver(schema), });
 
-  const onSubmit: SubmitHandler<RegisterInputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<RegisterInputs> = (data) => {
+    if (data.password !== data.confirmPassword) {
+      setError('confirmPassword', {
+        type: 'manual',
+        message: 'passwords do not match',
+      });
+      return;
+    }
+  };
+  console.log(errors);
 
   return (
     <section className="w-full max-w-full flex-center flex-col">
@@ -28,20 +39,35 @@ const Register = () => {
         className="mt-10 w-full max-w-2xl flex flex-col gap-7 glassmorphism"
       >
         <Input
-          registration={register("username")}
           label='user name'
+          registration={register("username")}
+          alert={errors.username?.message}
           type="text"
           placeholder="John Doe"
         />
+
         <Input
-          registration={register("email")}
           label='email'
+          registration={register("email")}
+          alert={errors.email?.message}
           type="email"
           placeholder="someemail@gmail.com"
         />
-        <PasswordInput label='password' registration={register("password")} />
-        <PasswordInput label='confirm password' registration={register("confirmPassword")} />
-        <SubmitButton text="Register" type="submit" />
+        <InputPassword
+          label='password'
+          registration={register("password")}
+          alert={errors.password?.message}
+        />
+        <InputPassword
+          label='confirm password'
+          alert={errors.confirmPassword?.message}
+          registration={register("confirmPassword")}
+        />
+        <SubmitButton
+          text="Register"
+          type="submit"
+          disabled={Object.keys(errors).length !== 0}
+        />
       </form>
     </section>
 

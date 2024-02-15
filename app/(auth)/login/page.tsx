@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { ProvidersButtons } from "./ProvidersButtons";
 import { SubmitButton } from "@components/FormElements/Buttons";
-import { PasswordInput } from "@components/FormElements/InputPassword";
+import { InputPassword } from "@components/FormElements/InputPassword";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Input } from "@components/FormElements/Input";
 
@@ -36,7 +36,7 @@ const LogIn = () => {
             type="text"
             placeholder="name"
           />
-          <PasswordInput label='password' registration={register("password")} />
+          <InputPassword label='password' registration={register("password")} />
           <SubmitButton text="LogIn" type="submit" />
           <Link href="/register">
             {"Don't have an account?   "}
