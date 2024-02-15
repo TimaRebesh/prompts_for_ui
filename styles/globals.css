@@ -4,10 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 
-  Note: The styles for this gradient grid background is heavily inspired by the creator of this amazing site (https://dub.sh) – all credits go to them! 
-*/
-
 .main {
   width: 100vw;
   min-height: 100vh;
@@ -79,6 +75,22 @@
 
 .black_btn {
   @apply rounded-full border border-black bg-black py-1.5 px-5 text-white transition-all hover:bg-white hover:text-black text-center text-sm font-inter flex items-center justify-center;
+}
+
+.blue_btn {
+  @apply rounded-full border border-blue-500 bg-blue-500 py-1.5 px-5 text-white transition-all hover:bg-blue-700  text-center text-sm font-inter flex items-center justify-center;
+}
+
+.blue_btn_disabled {
+  @apply border-blue-200 bg-blue-200 rounded-full border  py-1.5 px-5 text-white transition-all  text-center text-sm font-inter flex items-center justify-center;
+}
+
+.square_btn {
+  @apply border-none rounded-lg bg-gray-500 py-1.5 px-5 text-white transition-all hover:bg-gray-700  text-center text-sm font-inter flex items-center justify-center;
+}
+
+.square_btn_disabled {
+  @apply border-none rounded-lg bg-gray-200 py-1.5 px-5 text-white transition-all hover:bg-gray-200  text-center text-sm font-inter flex items-center justify-center;
 }
 
 .outline_btn {
