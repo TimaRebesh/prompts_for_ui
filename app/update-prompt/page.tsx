@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-
-// import Form from "@components/Form";
+import { PromptForm } from "@components/PromptForm/PromptForm";
 
 const UpdatePrompt = () => {
   const router = useRouter();
@@ -53,14 +52,13 @@ const UpdatePrompt = () => {
   };
 
   return (
-    <>dfdfdfd</>
-    // <Form
-    //   type='Edit'
-    //   post={post}
-    //   setPost={setPost}
-    //   submitting={submitting}
-    //   handleSubmit={updatePrompt}
-    // />
+    <PromptForm
+      type='Edit'
+      post={post}
+      setPost={setPost}
+      submitting={submitting}
+      handleSubmit={updatePrompt}
+    />
   );
 };
 

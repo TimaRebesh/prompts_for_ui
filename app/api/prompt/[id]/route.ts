@@ -1,3 +1,8 @@
+import {
+  responseError404,
+  responseError500,
+  responseSuccess,
+} from "@app/api/helpers";
 import Prompt from "@models/prompt";
 import { connectToDB } from "@utils/connection";
 
@@ -13,11 +18,13 @@ export const GET = async (
     await connectToDB();
 
     const prompt = await Prompt.findById(params.id).populate("creator");
-    if (!prompt) return new Response("Prompt Not Found", { status: 404 });
+    if (!prompt) {
+      return responseError404("Prompt Not Found");
+    }
 
-    return new Response(JSON.stringify(prompt), { status: 200 });
+    return responseSuccess(JSON.stringify(prompt));
   } catch (error) {
-    return new Response("Internal Server Error", { status: 500 });
+    return responseError500();
   }
 };
 
@@ -30,11 +37,10 @@ export const PATCH = async (
   try {
     await connectToDB();
 
-    // Find the existing prompt by ID
     const existingPrompt = await Prompt.findById(params.id);
 
     if (!existingPrompt) {
-      return new Response("Prompt not found", { status: 404 });
+      return responseError404("Prompt Not Found");
     }
 
     // Update the prompt with new data
@@ -43,9 +49,9 @@ export const PATCH = async (
 
     await existingPrompt.save();
 
-    return new Response("Successfully updated the Prompts", { status: 200 });
+    return responseSuccess("Successfully updated the Prompts");
   } catch (error) {
-    return new Response("Error Updating Prompt", { status: 500 });
+    return responseError500("Error Updating Prompt");
   }
 };
 
@@ -56,11 +62,10 @@ export const DELETE = async (
   try {
     await connectToDB();
 
-    // Find the prompt by ID and remove it
     await Prompt.findByIdAndDelete(params.id);
 
-    return new Response("Prompt deleted successfully", { status: 200 });
+    return responseSuccess("Prompt deleted successfully");
   } catch (error) {
-    return new Response("Error deleting prompt", { status: 500 });
+    return responseError500("Error deleting prompt");
   }
 };

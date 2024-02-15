@@ -4,7 +4,5 @@ export const responseError404 = (message = "Error") =>
 export const responseError500 = (message: string = "Internal Server Error") =>
   new Response(message, { status: 500 });
 
-export const responseSuccess = (payload: string | object) => {
-  const pl = typeof payload === "string" ? payload : JSON.stringify(payload);
-  return new Response(JSON.stringify(pl), { status: 200 });
-};
+export const responseSuccess = (payload: string) =>
+  new Response(payload, { status: 200 });

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Dispatch, FormEventHandler, SetStateAction } from "react";
 
 interface PFProps {
-  type: 'Create',
+  type: 'Create' | "Edit",
   post: PromptFormValues,
   setPost: Dispatch<SetStateAction<PromptFormValues>>,
   submitting: boolean,
