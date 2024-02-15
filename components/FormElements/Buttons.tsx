@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from "react";
 
-interface Button<T> extends ButtonHTMLAttributes<T> {
+interface Button extends ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string;
 }
 
@@ -8,7 +8,7 @@ export const SubmitButton = ({
   text,
   className,
   ...rest
-}: Button<unknown>) => (
+}: Button) => (
   <button
     className={`${rest.disabled ? 'blue_btn_disabled' : 'blue_btn'} ${className}`}
     {...rest}
@@ -19,7 +19,7 @@ export const SquareButton = ({
   text,
   className,
   ...rest
-}: Button<unknown>) => (
+}: Button) => (
   <button
     className={`${rest.disabled ? 'square_btn_disabled' : 'square_btn'} ${className}`}
     {...rest}

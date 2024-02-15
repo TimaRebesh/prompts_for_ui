@@ -3,11 +3,10 @@ import Link from 'next/link';
 import Image from "next/image";
 import React, { useState } from 'react';
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 enum NAV {
   CREATE_PROMPT = 'Create Prompt',
-  SING_OUT = 'Sign Out',
+  SING_OUT = 'Log Out',
   MY_PROFILE = 'My Profile'
 }
 
@@ -22,7 +21,7 @@ const Logged = () => {
 
 const DesktopNav = () => {
   const { data: session } = useSession();
-  const router = useRouter();
+
   return (
     <div className='sm:flex hidden'>
       <div className='flex gap-3 md:gap-5'>

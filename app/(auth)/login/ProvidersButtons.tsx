@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ClientSafeProvider, LiteralUnion, getProviders, signIn } from "next-auth/react";
 import { BuiltInProviderType } from 'next-auth/providers/index';
-import { SquareButton } from '@components/Buttons/Buttons';
+import { SquareButton } from '@components/FormElements/Buttons';
 
 export const ProvidersButtons = () => {
 

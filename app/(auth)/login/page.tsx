@@ -1,48 +1,50 @@
 'use client';
-
 import Link from "next/link";
 import { ProvidersButtons } from "./ProvidersButtons";
-import { SubmitButton } from "@components/Buttons/Buttons";
+import { SubmitButton } from "@components/FormElements/Buttons";
+import { PasswordInput } from "@components/FormElements/InputPassword";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Input } from "@components/FormElements/Input";
+
+type LoginInputs = {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 const LogIn = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<LoginInputs>();
+
+  const onSubmit: SubmitHandler<LoginInputs> = (data) => console.log(data);
+
   return (
     <section className="w-full max-w-full flex-center flex-col">
       <div className="mt-10 w-full max-w-2xl flex flex-col gap-7 glassmorphism">
         <ProvidersButtons />
-        <label>
-          <span className="font-satoshi text-base text-gray-700">
-            username
-          </span>
-          <input
-            // value={post.tag}
-            // onChange={(e) => setPost({ ...post, tag: e.target.value })}
+        <form className=" flex flex-col gap-7"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Input
+            registration={register("username")}
+            label='user name'
             type="text"
-            placeholder="username"
-            required
-            className="form_input"
+            placeholder="name"
           />
-        </label>
-        <label>
-          <span className="font-satoshi text-gray-700">
-            password
-          </span>
-          <input
-            // value={post.tag}
-            // onChange={(e) => setPost({ ...post, tag: e.target.value })}
-            type="text"
-            placeholder="********"
-            required
-            className="form_input"
-          />
-        </label>
-        <SubmitButton text="LogIn" onClick={() => { console.log('fired'); }} />
-        <Link href="/register">
-          {"Don't have an account?   "}
-          <b className="blue_gradient">Register</b>
-        </Link>
+          <PasswordInput label='password' registration={register("password")} />
+          <SubmitButton text="LogIn" type="submit" />
+          <Link href="/register">
+            {"Don't have an account?   "}
+            <b className="blue_gradient">Register</b>
+          </Link>
+        </form>
       </div>
     </section>
-
   );
 };
 
