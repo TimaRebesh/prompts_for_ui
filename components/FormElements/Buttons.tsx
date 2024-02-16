@@ -10,7 +10,7 @@ export const SubmitButton = ({
   ...rest
 }: Button) => (
   <button
-    className={`${rest.disabled ? 'blue_btn_disabled' : 'blue_btn'} ${className}`}
+    className={`blue_btn ${rest.disabled && 'disabled'} ${className}`}
     {...rest}
   >{text}</button>
 );
@@ -21,7 +21,7 @@ export const SquareButton = ({
   ...rest
 }: Button) => (
   <button
-    className={`${rest.disabled ? 'square_btn_disabled' : 'square_btn'} ${className}`}
+    className={`square_btn ${rest.disabled && 'disabled'} ${className}`}
     {...rest}
   >{text}</button>
 );

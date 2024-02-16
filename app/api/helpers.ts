@@ -6,3 +6,6 @@ export const responseError500 = (message: string = "Internal Server Error") =>
 
 export const responseSuccess = (payload: string) =>
   new Response(payload, { status: 200 });
+
+export const responseConflict409 = (message: string) =>
+  new Response(message, { status: 409 });

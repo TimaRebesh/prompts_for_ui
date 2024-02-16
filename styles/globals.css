@@ -81,16 +81,12 @@
   @apply rounded-full border border-blue-500 bg-blue-500 py-1.5 px-5 text-white transition-all hover:bg-blue-700  text-center text-sm font-inter flex items-center justify-center;
 }
 
-.blue_btn_disabled {
-  @apply border-blue-200 bg-blue-200 rounded-full border  py-1.5 px-5 text-white transition-all  text-center text-sm font-inter flex items-center justify-center;
+.disabled {
+  @apply opacity-50 disabled:pointer-events-none;
 }
 
 .square_btn {
   @apply border-none rounded-lg bg-gray-500 py-1.5 px-5 text-white transition-all hover:bg-gray-700  text-center text-sm font-inter flex items-center justify-center;
-}
-
-.square_btn_disabled {
-  @apply border-none rounded-lg bg-gray-200 py-1.5 px-5 text-white transition-all hover:bg-gray-200  text-center text-sm font-inter flex items-center justify-center;
 }
 
 .outline_btn {
@@ -145,6 +141,10 @@
 
 .form_input {
   @apply w-full flex rounded-lg mt-2 p-3 text-sm text-gray-500 outline-0;
+}
+
+.form_checkbox {
+  @apply text-blue-500 ml-2;
 }
 
 .input_alert {

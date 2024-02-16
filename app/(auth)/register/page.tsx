@@ -1,16 +1,23 @@
 'use client';
 import { SubmitButton } from "@components/FormElements/Buttons";
-import { RegisterOptions, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "@components/FormElements/Input";
 import { InputPassword } from "@components/FormElements/InputPassword";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./validation";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { User } from "next-auth";
+import { Checkbox } from "@components/FormElements/CheckBox";
+import { Preloader } from "@components/Preloader/Preloader";
 
 type RegisterInputs = {
   username: string;
   email: string;
   password: string;
   confirmPassword: string;
+  admin: boolean;
 };
 
 const Register = () => {
@@ -18,19 +25,60 @@ const Register = () => {
     register,
     handleSubmit,
     setError,
+    watch,
     formState: { errors },
   } = useForm<RegisterInputs>({ resolver: yupResolver(schema), });
+
+  const [submitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+  const registerNewUser = async () => {
+    setIsSubmitting(true);
+    const newUser: Omit<User, 'id'> = {
+      username: watch('username'),
+      email: watch('email'),
+      password: watch('password'),
+      isAdmin: watch('admin')
+    };
+    try {
+      const response = await fetch("/api/register/new", {
+        method: "POST",
+        body: JSON.stringify(newUser),
+      });
+
+      if (response.ok) {
+        router.push("/");
+      } else {
+        const info = await response.json();
+        if (info.type === 'username') {
+          setError('username', {
+            type: 'required',
+            message: info.message,
+          });
+        } else if (info.type === 'email') {
+          setError('email', {
+            type: 'required',
+            message: info.message,
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const onSubmit: SubmitHandler<RegisterInputs> = (data) => {
     if (data.password !== data.confirmPassword) {
       setError('confirmPassword', {
-        type: 'manual',
+        type: 'required',
         message: 'passwords do not match',
       });
       return;
     }
+    registerNewUser();
   };
-  console.log(errors);
 
   return (
     <section className="w-full max-w-full flex-center flex-col">
@@ -45,7 +93,6 @@ const Register = () => {
           type="text"
           placeholder="John Doe"
         />
-
         <Input
           label='email'
           registration={register("email")}
@@ -60,14 +107,24 @@ const Register = () => {
         />
         <InputPassword
           label='confirm password'
-          alert={errors.confirmPassword?.message}
           registration={register("confirmPassword")}
+          alert={errors.confirmPassword?.message}
+        />
+        <Checkbox
+          label='Do you want to be an administrator?'
+          registration={register("admin")}
+          alert={errors.admin?.message}
         />
         <SubmitButton
           text="Register"
           type="submit"
           disabled={Object.keys(errors).length !== 0}
         />
+        <Link href="/login">
+          {"Have an account?   "}
+          <b className="blue_gradient">LogIn</b>
+        </Link>
+        <Preloader isLoading={submitting} />
       </form>
     </section>
 
