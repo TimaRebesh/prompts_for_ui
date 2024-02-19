@@ -25,20 +25,21 @@ const Register = () => {
     register,
     handleSubmit,
     setError,
-    watch,
     formState: { errors },
   } = useForm<RegisterInputs>({ resolver: yupResolver(schema), });
 
   const [submitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  const registerNewUser = async () => {
+  const registerNewUser = async ({
+    username, email, password, admin
+  }: RegisterInputs) => {
     setIsSubmitting(true);
     const newUser: Omit<User, 'id'> = {
-      username: watch('username'),
-      email: watch('email'),
-      password: watch('password'),
-      isAdmin: watch('admin')
+      username,
+      email,
+      password,
+      isAdmin: admin
     };
     try {
       const response = await fetch("/api/register/new", {
@@ -77,7 +78,7 @@ const Register = () => {
       });
       return;
     }
-    registerNewUser();
+    registerNewUser(data);
   };
 
   return (

@@ -5,23 +5,26 @@ import { SubmitButton } from "@components/FormElements/Buttons";
 import { InputPassword } from "@components/FormElements/InputPassword";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Input } from "@components/FormElements/Input";
+import { signIn } from "next-auth/react";
 
 type LoginInputs = {
-  username: string;
   email: string;
   password: string;
-  confirmPassword: string;
 };
 
 const LogIn = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<LoginInputs>();
 
-  const onSubmit: SubmitHandler<LoginInputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<LoginInputs> = async ({ email, password }) => {
+    await signIn("credentials", {
+      email,
+      password,
+    });
+  };
 
   return (
     <section className="w-full max-w-full flex-center flex-col">
@@ -31,10 +34,10 @@ const LogIn = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Input
-            registration={register("username")}
-            label='user name'
-            type="text"
-            placeholder="name"
+            registration={register("email")}
+            label='email'
+            type="email"
+            placeholder="someemail@mail.com"
           />
           <InputPassword label='password' registration={register("password")} />
           <SubmitButton text="LogIn" type="submit" />

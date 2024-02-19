@@ -16,19 +16,11 @@ export const ProvidersButtons = () => {
     })();
   }, []);
 
-  const providersValues = useMemo(() => {
-    return providers ? Object.values(providers) : null;
-  }, [providers]);
-
   return (
-    <>
-      {providersValues && providersValues.map((provider) => (
-        <SquareButton
-          key={provider.name}
-          text={`Login with ${provider.name}`}
-          onClick={() => signIn(provider.id)}
-        />
-      ))}
-    </>
+    <SquareButton
+      text='Login with Google'
+      onClick={() => providers?.google && signIn(providers.google.id)}
+      disabled={!providers?.google}
+    />
   );
 };

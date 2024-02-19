@@ -6,7 +6,8 @@ import {
 import User from "@models/user";
 import { connectToDB } from "@utils/connection";
 import { User as UserType } from "next-auth";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
+import { signIn } from "next-auth/react";
 
 export const POST = async (request: Request) => {
   const { username, email, password, isAdmin } = (await request.json()) as Omit<
@@ -35,17 +36,21 @@ export const POST = async (request: Request) => {
       );
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password as string, salt);
+    // const salt = await bcrypt.genSalt(10);
+    // const hashedPassword = await bcrypt.hash(password as string, salt);
 
     const newUser = new User({
       username,
       email,
-      password: hashedPassword,
+      password,
       isAdmin,
     });
     await newUser.save();
     console.log("new user is created in db");
+    await signIn("credentials", {
+      username,
+      email,
+    });
     return responseSuccess(`user ${username} is created`);
   } catch (error) {
     return responseError500("Failed to create a new user");
