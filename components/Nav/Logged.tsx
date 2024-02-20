@@ -34,11 +34,11 @@ const DesktopNav = () => {
         </button>
 
         <Link href='/my-profile'>
-          <UserImage
+          {<UserImage
             image={session?.user?.image}
-          />
+          />}
         </Link>
-
+        {session?.user && <p>{session?.user.name}</p>}
       </div>
     </div>
   );

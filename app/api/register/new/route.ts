@@ -39,6 +39,7 @@ export const POST = async (request: Request) => {
     // const salt = await bcrypt.genSalt(10);
     // const hashedPassword = await bcrypt.hash(password as string, salt);
 
+    console.log(password);
     const newUser = new User({
       username,
       email,

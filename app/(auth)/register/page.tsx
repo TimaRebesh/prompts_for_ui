@@ -7,10 +7,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./validation";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { User } from "next-auth";
 import { Checkbox } from "@components/FormElements/CheckBox";
 import { Preloader } from "@components/Preloader/Preloader";
+import { useSession } from "next-auth/react";
 
 type RegisterInputs = {
   username: string;
@@ -21,12 +22,19 @@ type RegisterInputs = {
 };
 
 const Register = () => {
+
+  const { data: session } = useSession();
+
+  if (session) {
+    redirect('/');
+  }
+
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<RegisterInputs>({ resolver: yupResolver(schema), });
+  } = useForm<RegisterInputs>({ resolver: yupResolver(schema) });
 
   const [submitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -90,16 +98,16 @@ const Register = () => {
         <Input
           label='user name'
           registration={register("username")}
-          alert={errors.username?.message}
           type="text"
           placeholder="John Doe"
+          alert={errors.username?.message}
         />
         <Input
           label='email'
           registration={register("email")}
-          alert={errors.email?.message}
           type="email"
           placeholder="someemail@gmail.com"
+          alert={errors.email?.message}
         />
         <InputPassword
           label='password'
@@ -125,8 +133,8 @@ const Register = () => {
           {"Have an account?   "}
           <b className="blue_gradient">LogIn</b>
         </Link>
-        <Preloader isLoading={submitting} />
       </form>
+      <Preloader isLoading={submitting} />
     </section>
 
   );

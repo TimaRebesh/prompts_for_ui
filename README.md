@@ -36,5 +36,5 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 you can try to login with test user:
-user name: user test
+email: usertest@gmail.com
 pass: usertest

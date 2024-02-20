@@ -33,6 +33,16 @@ declare module "next-auth" {
   }
 
   interface Profile extends ProfileType {}
+
+  interface LoginInputs {
+    email: string;
+    password: string;
+  }
+
+  interface LoginError {
+    type: "email" | "password";
+    message: string;
+  }
 }
 
 // declare module "next-auth/jwt" {

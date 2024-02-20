@@ -1,8 +1,8 @@
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { InputHTMLAttributes, useState } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
-interface PIProps {
+interface PIProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   registration?: UseFormRegisterReturn<string>;
   alert?: string,
