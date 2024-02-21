@@ -5,20 +5,20 @@ import { SubmitButton } from "@components/FormElements/Buttons";
 import { InputPassword } from "@components/FormElements/InputPassword";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Input } from "@components/FormElements/Input";
-import { signIn, useSession } from "next-auth/react";
-import { redirect, useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { redirect } from "next/navigation";
 import { Preloader } from "@components/Preloader/Preloader";
 import { useState } from "react";
-import { loginAction } from "@app/actions/actions";
+import { checkLoginCredentials } from "@utils/actions";
 import { LoginInputs } from "next-auth";
 import { schema } from "./validation";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useCheckSession } from "@utils/hooks";
 
 
 const LogIn = () => {
 
-  const { data: session } = useSession();
-  const router = useRouter();
+  const { session, isSessionLoading } = useCheckSession();
   const [pending, setPending] = useState(false);
 
   if (session) {
@@ -34,36 +34,32 @@ const LogIn = () => {
 
 
   const onSubmit: SubmitHandler<LoginInputs> = async (credentials) => {
-    // setPending(true);
-    // const response = await signIn("credentials", {
-    //   email,
-    //   password,
-    //   redirect: false
-    // });
-
-    // setPending(false);
-    // if (response?.error) {
-
-    // }
-    const answer = await loginAction(credentials);
-    if (answer?.message) {
-      if (answer.type === "email") {
+    setPending(true);
+    const checkResult = await checkLoginCredentials(credentials);
+    if (checkResult?.message) {
+      if (checkResult.type === "email") {
         setError('email', {
           type: 'required',
-          message: answer.message,
+          message: checkResult.message,
         });
-      } else if (answer.type === "password") {
+      } else if (checkResult.type === "password") {
         setError('password', {
           type: 'required',
-          message: answer.message,
+          message: checkResult.message,
         });
       }
+      setPending(false);
+      return;
     }
 
-
-    // console.log(response);
-
+    await signIn("credentials", {
+      ...credentials,
+      redirect: false
+    });
   };
+
+  if (isSessionLoading)
+    return <Preloader />;
 
   return (
     <section className="w-full max-w-full flex-center flex-col">

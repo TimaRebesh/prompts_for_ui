@@ -7,11 +7,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./validation";
 import Link from "next/link";
 import { useState } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { User } from "next-auth";
 import { Checkbox } from "@components/FormElements/CheckBox";
 import { Preloader } from "@components/Preloader/Preloader";
-import { useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
+import { useCheckSession } from "@utils/hooks";
 
 type RegisterInputs = {
   username: string;
@@ -23,7 +24,7 @@ type RegisterInputs = {
 
 const Register = () => {
 
-  const { data: session } = useSession();
+  const { session, isSessionLoading } = useCheckSession();
 
   if (session) {
     redirect('/');
@@ -37,7 +38,6 @@ const Register = () => {
   } = useForm<RegisterInputs>({ resolver: yupResolver(schema) });
 
   const [submitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
 
   const registerNewUser = async ({
     username, email, password, admin
@@ -50,13 +50,18 @@ const Register = () => {
       isAdmin: admin
     };
     try {
-      const response = await fetch("/api/register/new", {
+      const response = await fetch("/api/register", {
         method: "POST",
         body: JSON.stringify(newUser),
       });
 
       if (response.ok) {
-        router.push("/");
+        const { email, password } = await response.json();
+        await signIn("credentials", {
+          email,
+          password,
+          redirect: false
+        });
       } else {
         const info = await response.json();
         if (info.type === 'username') {
@@ -88,6 +93,9 @@ const Register = () => {
     }
     registerNewUser(data);
   };
+
+  if (isSessionLoading)
+    return <Preloader />;
 
   return (
     <section className="w-full max-w-full flex-center flex-col">

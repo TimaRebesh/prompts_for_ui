@@ -30,9 +30,6 @@ const login = async (
 };
 
 const handler = NextAuth({
-  session: {
-    strategy: "jwt",
-  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
@@ -77,15 +74,16 @@ const handler = NextAuth({
       }
       return true;
     },
-    // async session({ session }) {
-    //   console.log(session);
-    //   const sessionUser = await User.findOne({
-    //     email: session.user.email,
-    //   });
-    //   session.user.id = sessionUser._id.toString();
-    //   session.user.isAdmin = sessionUser.isAdmin as boolean;
-    //   return session;
-    // },
+    async session({ session }) {
+      const sessionUser = await User.findOne({
+        email: session.user.email,
+      });
+      session.user.id = sessionUser._id.toString();
+      session.user.username = sessionUser.username;
+      session.user.image = sessionUser.image;
+      session.user.isAdmin = sessionUser.isAdmin as boolean;
+      return session;
+    },
   },
 });
 

@@ -38,7 +38,7 @@ const DesktopNav = () => {
             image={session?.user?.image}
           />}
         </Link>
-        {session?.user && <p>{session?.user.name}</p>}
+        {session?.user && <p>{session?.user.username}</p>}
       </div>
     </div>
   );

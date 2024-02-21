@@ -1,11 +1,12 @@
 "use server";
-
-import { signIn } from "@app/api/auth/[...nextauth]/route";
 import User from "@models/user";
 import { connectToDB } from "@utils/connection";
 import { LoginInputs } from "next-auth";
 
-export const loginAction = async ({ email, password }: LoginInputs) => {
+export const checkLoginCredentials = async ({
+  email,
+  password,
+}: LoginInputs) => {
   try {
     connectToDB();
     const user = await User.findOne({ email });
@@ -15,11 +16,7 @@ export const loginAction = async ({ email, password }: LoginInputs) => {
     if (user.password !== password) {
       return { message: "password is not correct", type: "password" };
     }
-    console.log("enter");
-    await signIn("credentials", {
-      email,
-      password,
-    });
+    return { type: "success" };
   } catch (err: any) {
     console.log(err);
 
