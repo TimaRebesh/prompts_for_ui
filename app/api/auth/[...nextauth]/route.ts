@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { connectToDB } from "@utils/connection";
 import CredentialsProvider from "next-auth/providers/credentials";
 import User from "@models/user";
+import bcrypt from "bcryptjs";
 
 const login = async (
   credentials: Record<"email" | "password", string> | undefined
@@ -10,17 +11,18 @@ const login = async (
   try {
     connectToDB();
     const user = await User.findOne({ email: credentials!.email });
-    console.log(credentials);
-    console.log("user", user);
 
     if (!user) {
       throw new Error("email has not been found");
     }
 
-    // const isPasswordCorrect = await bcrypt.compare(credentials.password as string, user.password);
-    // if (!isPasswordCorrect) {
-    //   throw new Error('Password is not correct');
-    // }
+    const isPasswordCorrect = await bcrypt.compare(
+      credentials!.password,
+      user.password
+    );
+    if (!isPasswordCorrect) {
+      throw new Error("Password is not correct");
+    }
 
     return user;
   } catch (err) {
@@ -43,7 +45,6 @@ const handler = NextAuth({
       },
       async authorize(credentials, req) {
         try {
-          console.log("fired");
           const user = await login(credentials);
           return user;
         } catch (err) {

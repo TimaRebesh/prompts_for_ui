@@ -2,6 +2,7 @@
 import User from "@models/user";
 import { connectToDB } from "@utils/connection";
 import { LoginInputs } from "next-auth";
+import bcrypt from "bcryptjs";
 
 export const checkLoginCredentials = async ({
   email,
@@ -13,7 +14,9 @@ export const checkLoginCredentials = async ({
     if (!user) {
       return { message: "email is not exist", type: "email" };
     }
-    if (user.password !== password) {
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      new Error("Password is not correct");
       return { message: "password is not correct", type: "password" };
     }
     return { type: "success" };
