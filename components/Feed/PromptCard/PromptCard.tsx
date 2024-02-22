@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { Prompt } from "next-auth";
+import { ModalCard } from "./ModalCard";
 
 interface PCProps {
   prompt: Prompt;
@@ -19,17 +20,15 @@ export const PromptCard = ({
   handleDelete,
   handleTagClick
 }: PCProps) => {
+
   const { data: session } = useSession();
   const pathName = usePathname();
-  const router = useRouter();
+  const [showCard, setShowCard] = useState(false);
 
   const [copied, setCopied] = useState("");
 
   const handleProfileClick = () => {
-    if (prompt.creator) {
-      if (prompt.creator?._id === session?.user.id) return router.push("/my-profile");
-      router.push(`/profile/${prompt.creator._id}?name=${prompt.creator.username}`);
-    }
+    setShowCard(true);
   };
 
   const handleCopy = () => {
@@ -38,7 +37,7 @@ export const PromptCard = ({
     setTimeout(() => setCopied(""), 3000);
   };
 
-  return (
+  return <>
     <div className='prompt_card'>
       <div className='flex justify-between items-start gap-5'>
         <div
@@ -77,7 +76,9 @@ export const PromptCard = ({
         </div>
       </div>
 
-      <p className='my-4 font-satoshi text-sm text-gray-700'>{prompt.prompt}</p>
+      <p className='my-4 font-satoshi text-sm text-gray-700'>{
+        prompt.prompt.length > 200 ? prompt.prompt.substring(0, 197) + '...' : prompt.prompt
+      }</p>
       <p
         className='font-inter text-sm blue_gradient cursor-pointer'
         onClick={() => handleTagClick && handleTagClick(prompt.tag)}
@@ -102,5 +103,10 @@ export const PromptCard = ({
         </div>
       )}
     </div>
-  );
+    <ModalCard
+      isOpen={showCard}
+      onClose={() => setShowCard(false)}
+      prompt={prompt}
+    />
+  </>;
 };
