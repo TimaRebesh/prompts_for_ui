@@ -44,10 +44,3 @@ declare module "next-auth" {
     message: string;
   }
 }
-
-// declare module "next-auth/jwt" {
-//   interface JWT {
-//     id: string;
-//     isAdmin: boolean;
-//   }
-// }

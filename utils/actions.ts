@@ -20,7 +20,7 @@ export const checkLoginCredentials = async ({
       return { message: "password is not correct", type: "password" };
     }
     return { type: "success" };
-  } catch (err: any) {
+  } catch (err: any | unknown) {
     console.log(err);
 
     if (err.message.includes("CredentialsSignin")) {
