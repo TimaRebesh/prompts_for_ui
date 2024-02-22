@@ -46,7 +46,7 @@ export const PromptCard = ({
           onClick={handleProfileClick}
         >
           <Image
-            src={post.creator!.image}
+            src={post.creator?.image || `/assets/icons/noavatar.png`}
             alt='user_image'
             width={40}
             height={40}

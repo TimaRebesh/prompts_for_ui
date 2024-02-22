@@ -1,25 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PromptForm } from "@components/PromptForm/PromptForm";
+import { Preloader } from "@components/Preloader/Preloader";
 
 const UpdatePrompt = () => {
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const promptId = searchParams.get("id");
 
   const [post, setPost] = useState({ prompt: "", tag: "", });
   const [submitting, setIsSubmitting] = useState(false);
+  const [pending, startTransition] = useTransition();
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      const response = await fetch(`/api/prompt/${promptId}`);
-      const data = await response.json();
+      startTransition(async () => {
+        const response = await fetch(`/api/prompt/${promptId}`);
+        const data = await response.json();
 
-      setPost({
-        prompt: data.prompt,
-        tag: data.tag,
+        setPost({
+          prompt: data.prompt,
+          tag: data.tag,
+        });
       });
     };
 
@@ -51,7 +56,8 @@ const UpdatePrompt = () => {
     }
   };
 
-  return (
+  return <>
+
     <PromptForm
       type='Edit'
       post={post}
@@ -59,7 +65,8 @@ const UpdatePrompt = () => {
       submitting={submitting}
       handleSubmit={updatePrompt}
     />
-  );
+    {pending && <Preloader />}
+  </>;
 };
 
 export default UpdatePrompt;

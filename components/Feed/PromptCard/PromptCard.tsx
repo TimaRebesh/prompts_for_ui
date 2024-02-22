@@ -1,28 +1,23 @@
 "use client";
-
 import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
 import { Prompt } from "next-auth";
 import { ModalCard } from "./ModalCard";
 
 interface PCProps {
   prompt: Prompt;
   handleTagClick: (tagName: string) => void;
-  handleEdit?: () => void;
-  handleDelete?: () => void;
+  handleDelete: (prompt: Prompt) => void;
 }
 
 export const PromptCard = ({
   prompt,
-  handleEdit,
   handleDelete,
   handleTagClick
 }: PCProps) => {
 
   const { data: session } = useSession();
-  const pathName = usePathname();
   const [showCard, setShowCard] = useState(false);
 
   const [copied, setCopied] = useState("");
@@ -86,17 +81,11 @@ export const PromptCard = ({
         {prompt.tag}
       </p>
 
-      {session?.user.id === prompt.creator?._id && pathName === "/profile" && (
+      {session?.user.isAdmin && (
         <div className='mt-5 flex-center gap-4 border-t border-gray-100 pt-3'>
           <p
-            className='font-inter text-sm green_gradient cursor-pointer'
-            onClick={handleEdit}
-          >
-            Edit
-          </p>
-          <p
             className='font-inter text-sm orange_gradient cursor-pointer'
-            onClick={handleDelete}
+            onClick={() => handleDelete(prompt)}
           >
             Delete
           </p>

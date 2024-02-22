@@ -1,29 +1,31 @@
 "use client";
-import { useState, useEffect, ChangeEventHandler, ChangeEvent } from "react";
+import { useState, useEffect, ChangeEventHandler, ChangeEvent, useTransition } from "react";
 import { PromptCard } from "./PromptCard/PromptCard";
 import { Prompt } from "next-auth";
+import { Preloader } from "@components/Preloader/Preloader";
 
 const Feed = () => {
-  const [allPrompts, setAllPosts] = useState<Array<Prompt>>([]);
 
-  // Search states
+  const [allPrompts, setAllPrompts] = useState<Array<Prompt>>([]);
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState<number | undefined>(undefined);
   const [searchedResults, setSearchedResults] = useState<Prompt[]>([]);
+  const [isPending, setTransitionStart] = useTransition();
 
-  const fetchPosts = async () => {
-    const response = await fetch("/api/prompt");
-    const data = await response.json();
-    setAllPosts(data);
+  const fetchPosts = () => {
+    setTransitionStart(async () => {
+      const response = await fetch("/api/prompt");
+      const data = await response.json();
+      setAllPrompts(data);
+    });
   };
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
-
   const filterPrompts = (searchtext: string) => {
-    const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
+    const regex = new RegExp(searchtext, "i");
     return allPrompts.filter(
       (item) =>
         regex.test(item.tag) ||
@@ -49,6 +51,27 @@ const Feed = () => {
     setSearchedResults(searchResult);
   };
 
+  const handleDelete = (prompt: Prompt) => {
+    const hasConfirmed = confirm(
+      "Are you sure you want to delete this prompt?"
+    );
+    if (hasConfirmed) {
+      setTransitionStart(async () => {
+        try {
+          const response = await fetch(`/api/prompt/${prompt._id.toString()}`, {
+            method: "DELETE",
+          });
+          if (response.ok) {
+            const filteredPrompts = allPrompts.filter((item) => item._id !== prompt._id);
+            setAllPrompts(filteredPrompts);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    }
+  };
+
   return (
     <section className='feed'>
       <div className='relative w-full flex-center'>
@@ -66,20 +89,28 @@ const Feed = () => {
         <PromptCardList
           data={searchedResults}
           handleTagClick={handleTagClick}
+          handleDelete={handleDelete}
         />
       ) : (
-        <PromptCardList data={allPrompts} handleTagClick={handleTagClick} />
+        <PromptCardList
+          data={allPrompts}
+          handleTagClick={handleTagClick}
+          handleDelete={handleDelete}
+        />
       )}
+      {isPending && <Preloader />}
     </section>
   );
 };
 
 const PromptCardList = ({
   data,
-  handleTagClick
+  handleTagClick,
+  handleDelete
 }: {
   data: Array<Prompt>,
   handleTagClick: (tagName: string) => void;
+  handleDelete: (prompt: Prompt) => void;
 }) => {
   return (
     <div className='mt-16 prompt_layout'>
@@ -88,6 +119,7 @@ const PromptCardList = ({
           key={prompt._id}
           prompt={prompt}
           handleTagClick={handleTagClick}
+          handleDelete={handleDelete}
         />
       ))}
     </div>

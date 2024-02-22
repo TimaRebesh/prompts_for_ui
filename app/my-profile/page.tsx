@@ -3,21 +3,19 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
 import { Profile } from "@components/Profile/Profile";
 import { Prompt } from "next-auth";
 
 const MyProfile = () => {
+
   const router = useRouter();
   const { data: session } = useSession();
-
   const [myPosts, setMyPosts] = useState<Prompt[]>([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch(`/api/users/${session?.user.id}/posts`);
       const data = await response.json();
-
       setMyPosts(data);
     };
 
@@ -32,19 +30,15 @@ const MyProfile = () => {
     const hasConfirmed = confirm(
       "Are you sure you want to delete this prompt?"
     );
-
     if (hasConfirmed) {
       try {
         const response = await fetch(`/api/prompt/${post._id.toString()}`, {
           method: "DELETE",
         });
-
         if (response.ok) {
           const filteredPosts = myPosts.filter((item) => item._id !== post._id);
           setMyPosts(filteredPosts);
         }
-
-
       } catch (error) {
         console.log(error);
       }

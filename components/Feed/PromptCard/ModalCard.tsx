@@ -47,7 +47,6 @@ export const ModalCard = ({
               height={40}
               className='rounded-full object-contain'
             />
-
             <div className='flex flex-col'>
               <h3 className='font-satoshi font-semibold text-gray-900'>
                 {prompt.creator?.username}
@@ -70,6 +69,5 @@ export const ModalCard = ({
       </div>
     </div>
   );
-
 };
 

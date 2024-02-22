@@ -38,7 +38,10 @@ const DesktopNav = () => {
             image={session?.user?.image}
           />}
         </Link>
-        {session?.user && <p>{session?.user.username}</p>}
+        {session?.user && <div>
+          <h1 className='font-semibold'>{session?.user.username}</h1>
+          {session?.user.isAdmin && <span className='text-blue-500 text-sm'>(admin)</span>}
+        </div>}
       </div>
     </div>
   );
@@ -59,7 +62,7 @@ const MobileNav = () => {
         {toggleDropdown && (
           <div className='dropdown'>
             <Link
-              href='/profile'
+              href='/my-profile'
               className='dropdown_link'
               onClick={() => setToggleDropdown(false)}
             >
