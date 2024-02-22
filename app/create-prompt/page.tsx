@@ -1,15 +1,15 @@
 "use client";
-
 import { FormEvent, useState } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
 import { PromptForm } from "@components/PromptForm/PromptForm";
 import { PromptFormValues } from "@app/types";
+import { useSessionExecution } from "@utils/hooks";
+import { Preloader } from "@components/Preloader/Preloader";
 
 const CreatePrompt = () => {
+
   const router = useRouter();
-  const { data: session } = useSession();
+  const { session, isSessionLoading } = useSessionExecution({ redirectIfNoSession: true });
 
   const [submitting, setIsSubmitting] = useState(false);
   const [post, setPost] = useState<PromptFormValues>({ prompt: "", tag: "" });
@@ -37,6 +37,9 @@ const CreatePrompt = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (isSessionLoading)
+    return <Preloader />;
 
   return (
     <PromptForm

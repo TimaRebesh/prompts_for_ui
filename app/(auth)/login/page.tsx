@@ -13,17 +13,13 @@ import { checkLoginCredentials } from "@utils/actions";
 import { LoginInputs } from "next-auth";
 import { schema } from "./validation";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useCheckSession } from "@utils/hooks";
+import { useSessionExecution } from "@utils/hooks";
 
 
 const LogIn = () => {
 
-  const { session, isSessionLoading } = useCheckSession();
+  const { session, isSessionLoading } = useSessionExecution({ redirectIfSession: true });
   const [pending, setPending] = useState(false);
-
-  if (session) {
-    redirect('/');
-  }
 
   const {
     register,

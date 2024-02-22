@@ -12,7 +12,7 @@ import { User } from "next-auth";
 import { Checkbox } from "@components/FormElements/CheckBox";
 import { Preloader } from "@components/Preloader/Preloader";
 import { signIn } from "next-auth/react";
-import { useCheckSession } from "@utils/hooks";
+import { useSessionExecution } from "@utils/hooks";
 
 type RegisterInputs = {
   username: string;
@@ -24,11 +24,7 @@ type RegisterInputs = {
 
 const Register = () => {
 
-  const { session, isSessionLoading } = useCheckSession();
-
-  if (session) {
-    redirect('/');
-  }
+  const { session, isSessionLoading } = useSessionExecution({ redirectIfSession: true });
 
   const {
     register,

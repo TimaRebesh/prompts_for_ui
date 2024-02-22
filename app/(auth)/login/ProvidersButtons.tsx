@@ -24,6 +24,7 @@ export const ProvidersButtons = ({ loading }: { loading: () => void; }) => {
   return (
     <SquareButton
       text='Login with Google'
+      img={{ src: "/assets/icons/google.svg" }}
       onClick={onGoogleLogin}
       disabled={!providers?.google}
     />
