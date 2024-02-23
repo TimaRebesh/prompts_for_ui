@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, ChangeEventHandler, ChangeEvent, useTransition } from "react";
+import { useState, useEffect, ChangeEvent, useTransition } from "react";
 import { PromptCard } from "../PromptCard/PromptCard";
 import { Prompt } from "next-auth";
 import { Preloader } from "@components/Preloader/Preloader";
@@ -15,8 +15,11 @@ const Feed = () => {
 
   const fetchPosts = () => {
     setFetchingPromptsTransitionStart(async () => {
-      const response = await fetch("/api/prompt");
+      const response = await fetch("/api/prompt",
+        { cache: 'no-store' }
+      );
       const data = await response.json();
+      console.log(data);
       setAllPrompts(data);
     });
   };
