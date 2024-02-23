@@ -10,18 +10,14 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState<number | undefined>(undefined);
   const [searchedResults, setSearchedResults] = useState<Prompt[]>([]);
-  const [isFetchingPrompts, setFetchingPromptsTransitionStart] = useTransition();
-  const [isDeleting, setDeletingTransitionStart] = useTransition();
 
-  const fetchPosts = () => {
-    setFetchingPromptsTransitionStart(async () => {
-      const response = await fetch("/api/prompt",
-        { cache: 'no-store' }
-      );
-      const data = await response.json();
-      console.log(data);
-      setAllPrompts(data);
-    });
+  const fetchPosts = async () => {
+    const response = await fetch("/api/prompt",
+      { cache: 'no-store' }
+    );
+    const data = await response.json();
+    console.log("prompts", data);
+    setAllPrompts(data);
   };
 
   useEffect(() => {
@@ -55,24 +51,22 @@ const Feed = () => {
     setSearchedResults(searchResult);
   };
 
-  const handleDelete = (prompt: Prompt) => {
+  const handleDelete = async (prompt: Prompt) => {
     const hasConfirmed = confirm(
       "Are you sure you want to delete this prompt?"
     );
     if (hasConfirmed) {
-      setDeletingTransitionStart(async () => {
-        try {
-          const response = await fetch(`/api/prompt/${prompt._id.toString()}`, {
-            method: "DELETE",
-          });
-          if (response.ok) {
-            const filteredPrompts = allPrompts.filter((item) => item._id !== prompt._id);
-            setAllPrompts(filteredPrompts);
-          }
-        } catch (error) {
-          console.log(error);
+      try {
+        const response = await fetch(`/api/prompt/${prompt._id.toString()}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          const filteredPrompts = allPrompts.filter((item) => item._id !== prompt._id);
+          setAllPrompts(filteredPrompts);
         }
-      });
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -102,7 +96,7 @@ const Feed = () => {
           handleDelete={handleDelete}
         />
       )}
-      {(isDeleting || isFetchingPrompts) && <Preloader />}
+      {/* {(isDeleting || isFetchingPrompts) && <Preloader />} */}
     </section>
   );
 };
