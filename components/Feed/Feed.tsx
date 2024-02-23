@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, ChangeEventHandler, ChangeEvent, useTransition } from "react";
-import { PromptCard } from "./PromptCard/PromptCard";
+import { PromptCard } from "../PromptCard/PromptCard";
 import { Prompt } from "next-auth";
 import { Preloader } from "@components/Preloader/Preloader";
 

@@ -1,44 +1,42 @@
 "use client";
-
 import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
 import { Prompt } from "next-auth";
+import { ModalCard } from "./ModalCard";
+import { usePathname } from "next/navigation";
 
 interface PCProps {
-  post: Prompt,
-  handleEdit: (post: Prompt) => void,
-  handleDelete: (post: Prompt) => void,
-  handleTagClick?: (tag: string) => void,
+  prompt: Prompt;
+  handleTagClick?: (tagName: string) => void;
+  handleDelete: (prompt: Prompt) => void;
+  handleEdit?: (post: Prompt) => void,
 }
 
 export const PromptCard = ({
-  post,
-  handleEdit,
+  prompt,
   handleDelete,
-  handleTagClick
+  handleTagClick,
+  handleEdit,
 }: PCProps) => {
+
   const { data: session } = useSession();
   const pathName = usePathname();
-  const router = useRouter();
+  const [showCard, setShowCard] = useState(false);
 
   const [copied, setCopied] = useState("");
 
   const handleProfileClick = () => {
-    if (post.creator) {
-      if (post.creator._id === session?.user.id) return router.push("/profile");
-      router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
-    }
+    setShowCard(true);
   };
 
   const handleCopy = () => {
-    setCopied(post.prompt);
-    navigator.clipboard.writeText(post.prompt);
+    setCopied(prompt.prompt);
+    navigator.clipboard.writeText(prompt.prompt);
     setTimeout(() => setCopied(""), 3000);
   };
 
-  return (
+  return <>
     <div className='prompt_card'>
       <div className='flex justify-between items-start gap-5'>
         <div
@@ -46,7 +44,7 @@ export const PromptCard = ({
           onClick={handleProfileClick}
         >
           <Image
-            src={post.creator?.image || `/assets/icons/noavatar.png`}
+            src={prompt.creator?.image || `/assets/icons/noavatar.png`}
             alt='user_image'
             width={40}
             height={40}
@@ -55,10 +53,10 @@ export const PromptCard = ({
 
           <div className='flex flex-col'>
             <h3 className='font-satoshi font-semibold text-gray-900'>
-              {post.creator!.username}
+              {prompt.creator?.username}
             </h3>
             <p className='font-inter text-sm text-gray-500'>
-              {post.creator!.email}
+              {prompt.creator?.email}
             </p>
           </div>
         </div>
@@ -66,43 +64,50 @@ export const PromptCard = ({
         <div className='copy_btn' onClick={handleCopy}>
           <Image
             src={
-              copied === post.prompt
+              copied === prompt.prompt
                 ? "/assets/icons/tick.svg"
                 : "/assets/icons/copy.svg"
             }
-            alt={copied === post.prompt ? "tick_icon" : "copy_icon"}
+            alt={copied === prompt.prompt ? "tick_icon" : "copy_icon"}
             width={12}
             height={12}
           />
         </div>
       </div>
 
-      <p className='my-4 font-satoshi text-sm text-gray-700'>{post.prompt}</p>
+      <p className='my-4 font-satoshi text-sm text-gray-700'>{
+        prompt.prompt.length > 200 ? prompt.prompt.substring(0, 197) + '...' : prompt.prompt
+      }</p>
       <p
         className='font-inter text-sm blue_gradient cursor-pointer'
-        onClick={() => handleTagClick && handleTagClick(post!.tag)}
+        onClick={() => handleTagClick && handleTagClick(prompt.tag)}
       >
-        {post.tag}
+        {prompt.tag}
       </p>
 
-      {session?.user.id === post.creator!._id
-        && pathName === "/my-profile"
-        && (
-          <div className='mt-5 flex-center gap-4 border-t border-gray-100 pt-3'>
+      {(session?.user.isAdmin || pathName === "/my-profile") && (
+        <div className='mt-5 flex-center gap-4 border-t border-gray-100 pt-3'>
+          {pathName === "/my-profile" &&
             <p
               className='font-inter text-sm green_gradient cursor-pointer'
-              onClick={() => handleEdit(post)}
+              onClick={() => handleEdit && handleEdit(prompt)}
             >
               Edit
-            </p>
-            <p
-              className='font-inter text-sm orange_gradient cursor-pointer'
-              onClick={() => handleDelete(post)}
-            >
-              Delete
-            </p>
-          </div>
-        )}
+            </p>}
+          <p
+            className='font-inter text-sm orange_gradient cursor-pointer'
+            onClick={() => handleDelete(prompt)}
+          >
+            Delete
+          </p>
+        </div>
+      )}
+
     </div>
-  );
+    <ModalCard
+      isOpen={showCard}
+      onClose={() => setShowCard(false)}
+      prompt={prompt}
+    />
+  </>;
 };

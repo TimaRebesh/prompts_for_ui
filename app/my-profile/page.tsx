@@ -5,12 +5,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Profile } from "@components/Profile/Profile";
 import { Prompt } from "next-auth";
+import { useSessionExecution } from "@utils/hooks";
+import { Preloader } from "@components/Preloader/Preloader";
 
 const MyProfile = () => {
 
   const router = useRouter();
-  const { data: session } = useSession();
-  const [myPosts, setMyPosts] = useState<Prompt[]>([]);
+  const { session, isSessionLoading } = useSessionExecution({ redirectIfNoSession: true });
+  const [myPosts, setMyPosts] = useState<Prompt[] | undefined>(undefined);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -36,7 +38,7 @@ const MyProfile = () => {
           method: "DELETE",
         });
         if (response.ok) {
-          const filteredPosts = myPosts.filter((item) => item._id !== post._id);
+          const filteredPosts = myPosts!.filter((item) => item._id !== post._id);
           setMyPosts(filteredPosts);
         }
       } catch (error) {
@@ -44,6 +46,9 @@ const MyProfile = () => {
       }
     }
   };
+
+  if (isSessionLoading)
+    return <Preloader />;
 
   return (
     <Profile
