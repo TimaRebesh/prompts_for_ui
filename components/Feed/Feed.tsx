@@ -10,10 +10,11 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState<number | undefined>(undefined);
   const [searchedResults, setSearchedResults] = useState<Prompt[]>([]);
-  const [isPending, setTransitionStart] = useTransition();
+  const [isFetchingPrompts, setFetchingPromptsTransitionStart] = useTransition();
+  const [isDeleting, setDeletingTransitionStart] = useTransition();
 
   const fetchPosts = () => {
-    setTransitionStart(async () => {
+    setFetchingPromptsTransitionStart(async () => {
       const response = await fetch("/api/prompt");
       const data = await response.json();
       setAllPrompts(data);
@@ -56,7 +57,7 @@ const Feed = () => {
       "Are you sure you want to delete this prompt?"
     );
     if (hasConfirmed) {
-      setTransitionStart(async () => {
+      setDeletingTransitionStart(async () => {
         try {
           const response = await fetch(`/api/prompt/${prompt._id.toString()}`, {
             method: "DELETE",
@@ -98,7 +99,7 @@ const Feed = () => {
           handleDelete={handleDelete}
         />
       )}
-      {isPending && <Preloader />}
+      {(isDeleting || isFetchingPrompts) && <Preloader />}
     </section>
   );
 };
