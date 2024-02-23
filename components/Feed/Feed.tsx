@@ -3,6 +3,7 @@ import { useState, useEffect, ChangeEvent, useTransition } from "react";
 import { PromptCard } from "../PromptCard/PromptCard";
 import { Prompt } from "next-auth";
 import { Preloader } from "@components/Preloader/Preloader";
+import { getAllPrompts } from "@utils/actions";
 
 const Feed = () => {
 
@@ -12,11 +13,14 @@ const Feed = () => {
   const [searchedResults, setSearchedResults] = useState<Prompt[]>([]);
 
   const fetchPosts = async () => {
-    const response = await fetch("/api/prompt",
-      { cache: 'no-store' }
-    );
-    const data = await response.json();
-    console.log("prompts", data);
+    const result = await getAllPrompts();
+    const data = JSON.parse(result as string);
+    console.log('action', data);
+    // const response = await fetch("/api/prompt",
+    //   { cache: 'no-store' }
+    // );
+    // const data = await response.json();
+    // console.log("prompts", data);
     setAllPrompts(data);
   };
 

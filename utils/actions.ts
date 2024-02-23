@@ -3,6 +3,7 @@ import User from "@models/user";
 import { connectToDB } from "@utils/connection";
 import { LoginInputs } from "next-auth";
 import bcrypt from "bcryptjs";
+import Prompt from "@models/prompt";
 
 export const checkLoginCredentials = async ({
   email,
@@ -27,5 +28,16 @@ export const checkLoginCredentials = async ({
       return { error: "Invalid username or password" };
     }
     throw err;
+  }
+};
+
+export const getAllPrompts = async () => {
+  try {
+    await connectToDB();
+    const filter = {};
+    const prompts = await Prompt.find(filter).populate("creator");
+    return JSON.stringify(prompts);
+  } catch (error: any) {
+    return { error: "Invalid username or password" };
   }
 };
