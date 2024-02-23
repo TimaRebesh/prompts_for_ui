@@ -52,7 +52,6 @@ const Register = () => {
       });
 
       if (response.ok) {
-        const { email, password } = await response.json();
         await signIn("credentials", {
           email,
           password,
