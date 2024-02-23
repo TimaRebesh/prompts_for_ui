@@ -38,6 +38,6 @@ export const getAllPrompts = async () => {
     const prompts = await Prompt.find(filter).populate("creator");
     return JSON.stringify(prompts);
   } catch (error: any) {
-    return { error: "Invalid username or password" };
+    return { error: "Could not get prompts" };
   }
 };

@@ -1,3 +1,4 @@
+import { Avatar } from "@components/FormElements/Avatar";
 import { Prompt } from "next-auth";
 import Image from "next/image";
 import { useState } from "react";
@@ -40,12 +41,9 @@ export const ModalCard = ({
           <div
             className='flex-1 flex justify-start items-center gap-3 cursor-pointer'
           >
-            <Image
-              src={prompt.creator?.image || `/assets/icons/noavatar.png`}
-              alt='user_image'
-              width={40}
-              height={40}
-              className='rounded-full object-contain'
+            <Avatar
+              src={prompt.creator?.image}
+              alt='user_avatar'
             />
             <div className='flex flex-col'>
               <h3 className='font-satoshi font-semibold text-gray-900'>

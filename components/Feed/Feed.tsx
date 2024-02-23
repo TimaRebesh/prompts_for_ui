@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, ChangeEvent, useTransition } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { PromptCard } from "../PromptCard/PromptCard";
 import { Prompt } from "next-auth";
 import { Preloader } from "@components/Preloader/Preloader";
@@ -11,17 +11,23 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState<number | undefined>(undefined);
   const [searchedResults, setSearchedResults] = useState<Prompt[]>([]);
+  const [showPreloader, setShowPreloader] = useState(false);
 
   const fetchPosts = async () => {
-    const result = await getAllPrompts();
-    const data = JSON.parse(result as string);
-    console.log('action', data);
-    // const response = await fetch("/api/prompt",
-    //   { cache: 'no-store' }
-    // );
-    // const data = await response.json();
-    // console.log("prompts", data);
-    setAllPrompts(data);
+    setShowPreloader(true);
+    try {
+      const result = await getAllPrompts();
+      if (typeof result === 'string') {
+        const data = JSON.parse(result as string);
+        setAllPrompts(data);
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setShowPreloader(false);
+    }
   };
 
   useEffect(() => {
@@ -61,6 +67,7 @@ const Feed = () => {
     );
     if (hasConfirmed) {
       try {
+        setShowPreloader(true);
         const response = await fetch(`/api/prompt/${prompt._id.toString()}`, {
           method: "DELETE",
         });
@@ -70,6 +77,8 @@ const Feed = () => {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setShowPreloader(false);
       }
     }
   };
@@ -100,7 +109,7 @@ const Feed = () => {
           handleDelete={handleDelete}
         />
       )}
-      {/* {(isDeleting || isFetchingPrompts) && <Preloader />} */}
+      {showPreloader && <Preloader />}
     </section>
   );
 };

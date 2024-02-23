@@ -1,8 +1,8 @@
 "use client";
 import Link from 'next/link';
-import Image from "next/image";
 import React, { useState } from 'react';
 import { signOut, useSession } from "next-auth/react";
+import { Avatar } from '@components/FormElements/Avatar';
 
 enum NAV {
   CREATE_PROMPT = 'Create Prompt',
@@ -34,9 +34,10 @@ const DesktopNav = () => {
         </button>
 
         <Link href='/my-profile'>
-          {<UserImage
-            image={session?.user?.image}
-          />}
+          <Avatar
+            src={session?.user?.image}
+            alt='user_avatar'
+          />
         </Link>
         {session?.user && <div>
           <h1 className='font-semibold'>{session?.user.username}</h1>
@@ -55,8 +56,9 @@ const MobileNav = () => {
   return (
     <div className='sm:hidden flex relative'>
       <div className='flex'>
-        <UserImage
-          image={session?.user?.image}
+        <Avatar
+          src={session?.user?.image}
+          alt='user_avatar'
           onClick={() => setToggleDropdown(prev => !prev)}
         />
         {toggleDropdown && (
@@ -91,23 +93,6 @@ const MobileNav = () => {
     </div>
   );
 };
-
-const UserImage = ({
-  onClick,
-  image
-}: {
-  onClick?: () => void;
-  image: string | null | undefined;
-}) => (
-  <Image
-    src={image || `/assets/icons/noavatar.png`}
-    width={37}
-    height={37}
-    className='rounded-full'
-    alt='profile'
-    onClick={onClick}
-  />
-);
 
 
 export default Logged;

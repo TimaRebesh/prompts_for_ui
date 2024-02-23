@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { Prompt } from "next-auth";
 import { ModalCard } from "./ModalCard";
 import { usePathname } from "next/navigation";
+import { Avatar } from "@components/FormElements/Avatar";
 
 interface PCProps {
   prompt: Prompt;
@@ -43,14 +44,7 @@ export const PromptCard = ({
           className='flex-1 flex justify-start items-center gap-3 cursor-pointer'
           onClick={handleProfileClick}
         >
-          <Image
-            src={prompt.creator?.image || `/assets/icons/noavatar.png`}
-            alt='user_image'
-            width={40}
-            height={40}
-            className='rounded-full object-contain'
-          />
-
+          <Avatar src={prompt.creator?.image} alt='user_image' />
           <div className='flex flex-col'>
             <h3 className='font-satoshi font-semibold text-gray-900'>
               {prompt.creator?.username}
