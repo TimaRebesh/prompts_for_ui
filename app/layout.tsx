@@ -14,6 +14,7 @@ const RootLayout = ({
 }>) => (
   <html lang='en'>
     <body>
+      <div className="hidden">test value</div>
       <Provider>
         <div className='main'>
           <div className='gradient' />
